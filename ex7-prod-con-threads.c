@@ -23,15 +23,18 @@ void* producer(void* threadid)
     long pid;
     pid = (long) threadid;
     //When using the producer_buffer, it enters the critical session.
-    pthread_mutex_lock(&lock);
-    if (ind < 10){
-        //Generate a random number between 1 to 10
-        int inputNum = 1+(rand()%10);
-        producer_buffer[ind] = inputNum;
-        ind = ind + 1;
-        printf("producer thread #%d added a number %d to the producer_buffer now with size: %d\n",pid, inputNum, ind);
+    while(1){
+        pthread_mutex_lock(&lock);
+        if (ind < 10){
+            //Generate a random number between 1 to 10
+            int inputNum = 1+(rand()%10);
+            producer_buffer[ind] = inputNum;
+            ind = ind + 1;
+            printf("producer thread #%d added a number %d to the producer_buffer now with size: %d\n",pid, inputNum, ind);
+        }
+        pthread_mutex_unlock(&lock);
+        sleep(1);
     }
-    pthread_mutex_unlock(&lock);
 
 }
 
@@ -39,16 +42,19 @@ void* consumer(void* threadid)
 {
     long cid;
     cid = (long) threadid;
-    pthread_mutex_lock(&lock);
-    if (ind > 0){
-        //Get the number and update the sum
-        ind = ind - 1;
-        int frontNumber = producer_buffer[ind];
-        producer_buffer[ind] = 0;
-        consumer_sum = consumer_sum + frontNumber;
-        printf("consumer thread #%d added a number %d from the producer_buffer now with size: %d, consumer_sum is :%d\n",cid, frontNumber, ind, consumer_sum);
+    while(1){
+        pthread_mutex_lock(&lock);
+        if (ind > 0){
+            //Get the number and update the sum
+            ind = ind - 1;
+            int frontNumber = producer_buffer[ind];
+            producer_buffer[ind] = 0;
+            consumer_sum = consumer_sum + frontNumber;
+            printf("consumer thread #%d added a number %d from the producer_buffer now with size: %d, consumer_sum is :%d\n",cid, frontNumber, ind, consumer_sum);
+        }
+        pthread_mutex_unlock(&lock);
+        sleep(1);
     }
-    pthread_mutex_unlock(&lock);
 
 }
 
