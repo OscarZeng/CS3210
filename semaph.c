@@ -56,7 +56,7 @@ int main(int argc, char** argv)
     *TheIndex = 0;
     printf("TheIndex=%d is allocated in shared memory.\n\n", *TheIndex);
     //The producer buffer
-    producer_buffer = (int*)shmat(shmid+40, NULL, 0);
+    producer_buffer = shmat(shmid+40, NULL, 0);
     printf("producer_buffer is allocated in shared memory.\n\n");
 
     /********************************************************/
@@ -64,7 +64,7 @@ int main(int argc, char** argv)
     //printf("How many children do you want to fork?\n");
     //printf("Fork count: ");
     //scanf("%u", &n);
-    //Here the num of threads should be 2(Producers)
+    //Here the num of child processes should be 2(Producers)
     n = 2;
 
     //printf("What do you want the semaphore value to be?\n");
