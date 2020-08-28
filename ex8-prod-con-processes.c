@@ -100,7 +100,7 @@ int main(int argc, char** argv)
     //printf("Semaphore value: ");
     //scanf("%u", &value);
     //semaphores should be 1, only one process allowed in cirtical session
-    value = 0;
+    value = 1;
 
     /* initialize semaphores for shared processes */
     sem = sem_open("pSem", O_CREAT | O_EXCL, 0644, value);
