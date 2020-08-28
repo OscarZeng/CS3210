@@ -54,12 +54,11 @@ int main(int argc, char** argv)
     *p = 0;
     printf("p=%d is allocated in shared memory.\n\n", *p);
     //Keep the record where the TheIndexex is
-    TheIndex = (int*)shmat(shmid+20, NULL, 0);
+    TheIndex = (int*)shmat(shmid+2*sizeof(int), NULL, 0);
     *TheIndex = 0;
     printf("TheIndex=%d is allocated in shared memory.\n\n", *TheIndex);
     //The producer buffer
-    producer_buffer = malloc(sizeof(int)*buffer_size);
-    producer_buffer = shmat(shmid+40, NULL, 0);
+    producer_buffer = shmat(shmid+4*sizeof(int), NULL, 0);
     
     printf("producer_buffer is allocated in shared memory.\n\n");
 
