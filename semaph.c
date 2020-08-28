@@ -34,6 +34,8 @@ int main(int argc, char** argv)
     int* TheIndex;
     /*      shared variable         */ /*shared */
     int* producer_buffer;
+    /*      buffer size             */
+    int buffer_size = 10;
     /*      fork count              */
     unsigned int n;
     /*      semaphore value         */
@@ -42,7 +44,7 @@ int main(int argc, char** argv)
     /* initialize a shared variable in shared memory */
     shmkey = ftok("/dev/null", 5); /* valid directory name and a number */
     printf("shmkey for p = %d\n", shmkey);
-    shmid = shmget(shmkey, sizeof(int), 0644 | IPC_CREAT);
+    shmid = shmget(shmkey, sizeof(int)*(buffer_size+10), 0644 | IPC_CREAT);
     if (shmid < 0) { /* shared memory error check */
         perror("shmget\n");
         exit(1);
@@ -56,7 +58,9 @@ int main(int argc, char** argv)
     *TheIndex = 0;
     printf("TheIndex=%d is allocated in shared memory.\n\n", *TheIndex);
     //The producer buffer
+    producer_buffer = malloc(sizeof(int)*buffer_size);
     producer_buffer = shmat(shmid+40, NULL, 0);
+    
     printf("producer_buffer is allocated in shared memory.\n\n");
 
     /********************************************************/
