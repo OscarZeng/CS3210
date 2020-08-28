@@ -42,24 +42,42 @@ int main(int argc, char** argv)
     unsigned int value;
 
     /* initialize a shared variable in shared memory */
-    shmkey = ftok("/dev/null", 5); /* valid directory name and a number */
-    printf("shmkey for p = %d\n", shmkey);
-    shmid = shmget(shmkey, sizeof(int)*(buffer_size+10), 0644 | IPC_CREAT);
-    if (shmid < 0) { /* shared memory error check */
+    shmkey_p = ftok("/dev/null", 5); /* valid directory name and a number */
+    printf("shmkey for p = %d\n", shmkey_p);
+    shmid_p = shmget(shmkey_p, sizeof(int), 0644 | IPC_CREAT);
+    if (shmid_p < 0) { /* shared memory error check */
         perror("shmget\n");
         exit(1);
     }
     //Here we use the variable p as the sum of values
-    p = (int*)shmat(shmid, NULL, 0); /* attach p to shared memory */
+    p = (int*)shmat(shmid_p, NULL, 0); /* attach p to shared memory */
     *p = 0;
     printf("p=%d is allocated in shared memory.\n\n", *p);
+
+    /* initialize a shared variable in shared memory */
+    shmkey_index = ftok("/dev/null", 5); /* valid directory name and a number */
+    printf("shmkey for TheIndex = %d\n", shmkey_index);
+    shmid_index = shmget(shmkey_index, sizeof(int), 0644 | IPC_CREAT);
+    if (shmid_index < 0) { /* shared memory error check */
+        perror("shmget\n");
+        exit(1);
+    }
     //Keep the record where the TheIndexex is
-    TheIndex = (int*)shmat(shmid+2*sizeof(int), NULL, 0);
+    TheIndex = (int*)shmat(shmid_index, NULL, 0);
     *TheIndex = 0;
     printf("TheIndex=%d is allocated in shared memory.\n\n", *TheIndex);
-    //The producer buffer
-    producer_buffer = shmat(shmid+4*sizeof(int), NULL, 0);
     
+
+    /* initialize a shared variable in shared memory */
+    shmkey_b = ftok("/dev/null", 5); /* valid directory name and a number */
+    printf("shmkey for p = %d\n", shmkey_b);
+    shmid_b = shmget(shmkey_b, sizeof(int)*buffer_size, 0644 | IPC_CREAT);
+    if (shmid_b < 0) { /* shared memory error check */
+        perror("shmget\n");
+        exit(1);
+    }
+    //The producer buffer
+    producer_buffer = shmat(shmid_b, NULL, 0);
     printf("producer_buffer is allocated in shared memory.\n\n");
 
     /********************************************************/
