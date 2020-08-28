@@ -53,8 +53,7 @@ int main(int argc, char** argv)
     printf("ind=%d is allocated in shared memory.\n\n", *ind);
     //The producer buffer
     producer_buffer = (int*)shmat(shmid+40, NULL, 0);
-    producer_buffer[10] = {0,0,0,0,0,0,0,0,0,0};
-    printf("producer_buffer size=%d is allocated in shared memory.\n\n", producer_buffer.size());
+    printf("producer_buffer is allocated in shared memory.\n\n");
 
     /********************************************************/
 
@@ -62,13 +61,13 @@ int main(int argc, char** argv)
     //printf("Fork count: ");
     //scanf("%u", &n);
     //Here the num of threads should be 2(Producers)
-    n = 2
+    int n = 2
 
     //printf("What do you want the semaphore value to be?\n");
     //printf("Semaphore value: ");
     //scanf("%u", &value);
     //semaphores should be 1, only one process allowed in cirtical session
-    value = 1
+    int value = 1
 
     /* initialize semaphores for shared processes */
     sem = sem_open("pSem", O_CREAT | O_EXCL, 0644, value);
