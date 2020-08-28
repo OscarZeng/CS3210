@@ -152,7 +152,9 @@ int main(int argc, char** argv)
         
         /* shared memory detach */
         shmdt(p);
-        shmctl(shmid, IPC_RMID, 0);
+        shmctl(shmid_p, IPC_RMID, 0);
+        shmctl(shmid_b, IPC_RMID, 0);
+        shmctl(shmid_index, IPC_RMID, 0);
 
         /* cleanup semaphores */
         sem_unlink("pSem");
