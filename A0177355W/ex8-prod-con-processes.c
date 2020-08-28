@@ -1,3 +1,4 @@
+//Name: Zeng Hao Student Number: A0177355W
 /*******************************************************************
 * semaph.c
 * Demonstrates using semaphores to synchromize Linux processes created with fork()
