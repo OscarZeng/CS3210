@@ -61,13 +61,13 @@ int main(int argc, char** argv)
     //printf("Fork count: ");
     //scanf("%u", &n);
     //Here the num of threads should be 2(Producers)
-    int n = 2
+    int n = 2;
 
     //printf("What do you want the semaphore value to be?\n");
     //printf("Semaphore value: ");
     //scanf("%u", &value);
     //semaphores should be 1, only one process allowed in cirtical session
-    int value = 1
+    int value = 1;
 
     /* initialize semaphores for shared processes */
     sem = sem_open("pSem", O_CREAT | O_EXCL, 0644, value);
