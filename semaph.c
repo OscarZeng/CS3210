@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     /*      shared variable         */ /*shared */
     int* TheIndex;
     /*      shared variable         */ /*shared */
-    int producer_buffer[10];
+    int* producer_buffer;
     /*      fork count              */
     unsigned int n;
     /*      semaphore value         */
