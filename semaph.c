@@ -43,20 +43,32 @@ int main(int argc, char** argv)
         perror("shmget\n");
         exit(1);
     }
-
+    //Here we use the variable p as the sum of values
     p = (int*)shmat(shmid, NULL, 0); /* attach p to shared memory */
     *p = 0;
     printf("p=%d is allocated in shared memory.\n\n", *p);
+    //Keep the record where the index is
+    ind = (int*)shmat(shmid+20, NULL, 0);
+    *ind = 0;
+    printf("ind=%d is allocated in shared memory.\n\n", *ind);
+    //The producer buffer
+    producer_buffer = (int*)shmat(shmid+40, NULL, 0);
+    producer_buffer[10] = {0,0,0,0,0,0,0,0,0,0};
+    printf("producer_buffer size=%d is allocated in shared memory.\n\n", producer_buffer.size());
 
     /********************************************************/
 
-    printf("How many children do you want to fork?\n");
-    printf("Fork count: ");
-    scanf("%u", &n);
+    //printf("How many children do you want to fork?\n");
+    //printf("Fork count: ");
+    //scanf("%u", &n);
+    //Here the num of threads should be 2(Producers)
+    n = 2
 
-    printf("What do you want the semaphore value to be?\n");
-    printf("Semaphore value: ");
-    scanf("%u", &value);
+    //printf("What do you want the semaphore value to be?\n");
+    //printf("Semaphore value: ");
+    //scanf("%u", &value);
+    //semaphores should be 1, only one process allowed in cirtical session
+    value = 1
 
     /* initialize semaphores for shared processes */
     sem = sem_open("pSem", O_CREAT | O_EXCL, 0644, value);
@@ -83,13 +95,29 @@ int main(int argc, char** argv)
     /******************************************************/
     if (pid != 0) {
         /* wait for all children to exit */
-        while (pid = waitpid(-1, NULL, 0)) {
+        /*while (pid = waitpid(-1, NULL, 0)) {
             if (errno == ECHILD)
                 break;
         }
 
         printf("\nParent: All children have exited.\n");
+        */
 
+        while(1){
+        sem_wait(sem); /* P operation */
+        printf("  Consumer(%d) is in critical section.\n", i);
+        if (*ind < 10){
+            //Generate a random number between 1 to 10
+            int inputNum = 1+(rand()%10);
+            producer_buffer[ind] = inputNum;
+            *ind = *ind + 1;
+            printf("producer process #%d added a number %d to the producer_buffer now with size: %d\n",i, inputNum, *ind);
+        }
+        sleep(1);
+        printf("  Consumer(%d) new value of *p=%d.\n", i, *p);
+        sem_post(sem); /* V operation */
+        }
+        
         /* shared memory detach */
         shmdt(p);
         shmctl(shmid, IPC_RMID, 0);
@@ -106,12 +134,21 @@ int main(int argc, char** argv)
     /******************   CHILD PROCESS   *****************/
     /******************************************************/
     else {
+        //Producer will work forever
+        while(1){
         sem_wait(sem); /* P operation */
-        printf("  Child(%d) is in critical section.\n", i);
+        printf("  Producer(%d) is in critical section.\n", i);
+        if (*ind > 0){
+            //Get the number and update the sum
+            *ind = *ind - 1;
+            int frontNumber = producer_buffer[ind];
+            producer_buffer[ind] = 0;
+            *p += frontNumber;
+            printf("consumer process #%d added a number %d from the producer_buffer now with size: %d, consumer_sum is :%d\n",i, frontNumber, *ind, *p);
+        }
         sleep(1);
-        *p += i % 3; /* increment *p by 0, 1 or 2 based on i */
-        printf("  Child(%d) new value of *p=%d.\n", i, *p);
+        printf("  Producer(%d) new value of *p=%d.\n", i, *p);
         sem_post(sem); /* V operation */
-        exit(0);
+        }
     }
 }
