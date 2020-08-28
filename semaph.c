@@ -47,10 +47,10 @@ int main(int argc, char** argv)
     p = (int*)shmat(shmid, NULL, 0); /* attach p to shared memory */
     *p = 0;
     printf("p=%d is allocated in shared memory.\n\n", *p);
-    //Keep the record where the index is
-    ind = (int*)shmat(shmid+20, NULL, 0);
-    *ind = 0;
-    printf("ind=%d is allocated in shared memory.\n\n", *ind);
+    //Keep the record where the TheIndexex is
+    TheIndex = (int*)shmat(shmid+20, NULL, 0);
+    *TheIndex = 0;
+    printf("TheIndex=%d is allocated in shared memory.\n\n", *TheIndex);
     //The producer buffer
     producer_buffer = (int*)shmat(shmid+40, NULL, 0);
     printf("producer_buffer is allocated in shared memory.\n\n");
@@ -61,13 +61,13 @@ int main(int argc, char** argv)
     //printf("Fork count: ");
     //scanf("%u", &n);
     //Here the num of threads should be 2(Producers)
-    int n = 2;
+    n = 2;
 
     //printf("What do you want the semaphore value to be?\n");
     //printf("Semaphore value: ");
     //scanf("%u", &value);
     //semaphores should be 1, only one process allowed in cirtical session
-    int value = 1;
+    value = 1;
 
     /* initialize semaphores for shared processes */
     sem = sem_open("pSem", O_CREAT | O_EXCL, 0644, value);
@@ -105,12 +105,12 @@ int main(int argc, char** argv)
         while(1){
         sem_wait(sem); /* P operation */
         printf("  Consumer(%d) is in critical section.\n", i);
-        if (*ind < 10){
+        if (*TheIndex < 10){
             //Generate a random number between 1 to 10
             int inputNum = 1+(rand()%10);
-            producer_buffer[ind] = inputNum;
-            *ind = *ind + 1;
-            printf("producer process #%d added a number %d to the producer_buffer now with size: %d\n",i, inputNum, *ind);
+            producer_buffer[TheIndex] = inputNum;
+            *TheIndex = *TheIndex + 1;
+            printf("producer process #%d added a number %d to the producer_buffer now with size: %d\n",i, inputNum, *TheIndex);
         }
         sleep(1);
         printf("  Consumer(%d) new value of *p=%d.\n", i, *p);
@@ -137,13 +137,13 @@ int main(int argc, char** argv)
         while(1){
         sem_wait(sem); /* P operation */
         printf("  Producer(%d) is in critical section.\n", i);
-        if (*ind > 0){
+        if (*TheIndex > 0){
             //Get the number and update the sum
-            *ind = *ind - 1;
-            int frontNumber = producer_buffer[ind];
-            producer_buffer[ind] = 0;
+            *TheIndex = *TheIndex - 1;
+            int frontNumber = producer_buffer[TheIndex];
+            producer_buffer[TheIndex] = 0;
             *p += frontNumber;
-            printf("consumer process #%d added a number %d from the producer_buffer now with size: %d, consumer_sum is :%d\n",i, frontNumber, *ind, *p);
+            printf("consumer process #%d added a number %d from the producer_buffer now with size: %d, consumer_sum is :%d\n",i, frontNumber, *TheIndex, *p);
         }
         sleep(1);
         printf("  Producer(%d) new value of *p=%d.\n", i, *p);
