@@ -72,7 +72,7 @@ int main(int argc, char** argv)
     }
     //Keep the record where the TheIndexex is
     TheIndex = (int*)shmat(shmid_index, NULL, 0);
-    *TheIndex = 0;
+    *TheIndex = 1;
     printf("TheIndex=%d is allocated in shared memory.\n\n", *TheIndex);
     
 
@@ -134,21 +134,21 @@ int main(int argc, char** argv)
 
         printf("\nParent: All children have exited.\n");
         */
-
+        //This is cpnsumer
         while(1){
         sem_wait(sem); /* P operation */
         printf("  Consumer(%d) is in critical section.\n", i);
-        if (*TheIndex < 10){
-            //Generate a random number between 1 to 10
-            int inputNum = 1+(rand()%10);
-            producer_buffer[*TheIndex] = inputNum;
-            *TheIndex = *TheIndex + 1;
-            printf("producer process #%d added a number %d to the producer_buffer now with size: %d\n",i, inputNum, *TheIndex);
+        if (*TheIndex > 0){
+            //Get the number and update the sum
+            *TheIndex = *TheIndex - 1;
+            int frontNumber = producer_buffer[*TheIndex];
+            producer_buffer[*TheIndex] = 0;
+            *p += frontNumber;
+            printf("consumer process #%d added a number %d from the producer_buffer now with size: %d, consumer_sum is :%d\n",i, frontNumber, *TheIndex, *p);
         }
-        
+        sleep(1);
         printf("  Consumer(%d) new value of *p=%d.\n", i, *p);
         sem_post(sem); /* V operation */
-        sleep(1);
         }
         
         /* shared memory detach */
@@ -173,18 +173,18 @@ int main(int argc, char** argv)
         while(1){
         sem_wait(sem); /* P operation */
         printf("  Producer(%d) is in critical section.\n", i);
-        if (*TheIndex > 0){
-            //Get the number and update the sum
-            *TheIndex = *TheIndex - 1;
-            int frontNumber = producer_buffer[*TheIndex];
-            producer_buffer[*TheIndex] = 0;
-            *p += frontNumber;
-            printf("consumer process #%d added a number %d from the producer_buffer now with size: %d, consumer_sum is :%d\n",i, frontNumber, *TheIndex, *p);
+        if (*TheIndex < 10){
+            //Generate a random number between 1 to 10
+            int inputNum = 1+(rand()%10);
+            producer_buffer[*TheIndex] = inputNum;
+            *TheIndex = *TheIndex + 1;
+            printf("producer process #%d added a number %d to the producer_buffer now with size: %d\n",i, inputNum, *TheIndex);
         }
-        
+
+
+        sleep(1);
         printf("  Producer(%d) new value of *p=%d.\n", i, *p);
         sem_post(sem); /* V operation */
-        sleep(1);
         }
     }
 }
