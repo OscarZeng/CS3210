@@ -21,9 +21,17 @@ int main(int argc, char** argv)
     /*      loop variables          */
     int i;
     /*      shared memory key       */
-    key_t shmkey;
+    key_t shmkey_p;
     /*      shared memory id        */
-    int shmid;
+    int shmid_p;
+    /*      shared memory key       */
+    key_t shmkey_index;
+    /*      shared memory id        */
+    int shmid_index;
+    /*      shared memory key       */
+    key_t shmkey_b;
+    /*      shared memory id        */
+    int shmid_b;
     /*      synch semaphore         */ /*shared */
     sem_t* sem;
     /*      fork pid                */
