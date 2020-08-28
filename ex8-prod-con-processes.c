@@ -134,8 +134,8 @@ int main(int argc, char** argv)
 
         printf("\nParent: All children have exited.\n");
         */
-        //This is cpnsumer
-        //while(1){
+        //This is consumer
+        while(1){
         sem_wait(sem); /* P operation */
         printf("  Consumer(%d) is in critical section.\n", i);
         if (*TheIndex > 0){
@@ -146,23 +146,23 @@ int main(int argc, char** argv)
             *p += frontNumber;
             printf("consumer process #%d added a number %d from the producer_buffer now with size: %d, consumer_sum is :%d\n",i, frontNumber, *TheIndex, *p);
         }
-        sleep(1);
         printf("  Consumer(%d) new value of *p=%d.\n", i, *p);
         sem_post(sem); /* V operation */
-        //}
+        sleep(1);
+        }
         
-        // /* shared memory detach */
-        // shmdt(p);
-        // shmctl(shmid_p, IPC_RMID, 0);
-        // shmctl(shmid_b, IPC_RMID, 0);
-        // shmctl(shmid_index, IPC_RMID, 0);
+        /* shared memory detach */
+        shmdt(p);
+        shmctl(shmid_p, IPC_RMID, 0);
+        shmctl(shmid_b, IPC_RMID, 0);
+        shmctl(shmid_index, IPC_RMID, 0);
 
-        //  cleanup semaphores 
-        // sem_unlink("pSem");
-        // sem_close(sem);
-        // /* unlink prevents the semaphore existing forever */
-        // /* if a crash occurs during the execution         */
-        // exit(0);
+        // cleanup semaphores 
+        sem_unlink("pSem");
+        sem_close(sem);
+        /* unlink prevents the semaphore existing forever */
+        /* if a crash occurs during the execution         */
+        exit(0);
     }
 
     /******************************************************/
@@ -170,7 +170,7 @@ int main(int argc, char** argv)
     /******************************************************/
     else {
         //Producer will work forever
-        //while(1){
+        while(1){
         sem_wait(sem); /* P operation */
         printf("  Producer(%d) is in critical section.\n", i);
         if (*TheIndex < 10){
@@ -180,11 +180,9 @@ int main(int argc, char** argv)
             *TheIndex = *TheIndex + 1;
             printf("producer process #%d added a number %d to the producer_buffer now with size: %d\n",i, inputNum, *TheIndex);
         }
-
-
-        sleep(1);
         printf("  Producer(%d) new value of *p=%d.\n", i, *p);
         sem_post(sem); /* V operation */
-        //}
+        sleep(1);
+        }
     }
 }
