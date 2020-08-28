@@ -115,7 +115,7 @@ int main(int argc, char** argv)
         if (*TheIndex < 10){
             //Generate a random number between 1 to 10
             int inputNum = 1+(rand()%10);
-            producer_buffer[TheIndex] = inputNum;
+            producer_buffer[*TheIndex] = inputNum;
             *TheIndex = *TheIndex + 1;
             printf("producer process #%d added a number %d to the producer_buffer now with size: %d\n",i, inputNum, *TheIndex);
         }
@@ -147,8 +147,8 @@ int main(int argc, char** argv)
         if (*TheIndex > 0){
             //Get the number and update the sum
             *TheIndex = *TheIndex - 1;
-            int frontNumber = producer_buffer[TheIndex];
-            producer_buffer[TheIndex] = 0;
+            int frontNumber = producer_buffer[*TheIndex];
+            producer_buffer[*TheIndex] = 0;
             *p += frontNumber;
             printf("consumer process #%d added a number %d from the producer_buffer now with size: %d, consumer_sum is :%d\n",i, frontNumber, *TheIndex, *p);
         }
