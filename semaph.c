@@ -63,7 +63,7 @@ int main(int argc, char** argv)
     printf("p=%d is allocated in shared memory.\n\n", *p);
 
     /* initialize a shared variable in shared memory */
-    shmkey_index = ftok("/dev/null", 5); /* valid directory name and a number */
+    shmkey_index = ftok("/dev/null", 10); /* valid directory name and a number */
     printf("shmkey for TheIndex = %d\n", shmkey_index);
     shmid_index = shmget(shmkey_index, sizeof(int), 0644 | IPC_CREAT);
     if (shmid_index < 0) { /* shared memory error check */
@@ -77,8 +77,8 @@ int main(int argc, char** argv)
     
 
     /* initialize a shared variable in shared memory */
-    shmkey_b = ftok("/dev/null", 5); /* valid directory name and a number */
-    printf("shmkey for p = %d\n", shmkey_b);
+    shmkey_b = ftok("/dev/null", 20); /* valid directory name and a number */
+    printf("shmkey for buffer = %d\n", shmkey_b);
     shmid_b = shmget(shmkey_b, sizeof(int)*buffer_size, 0644 | IPC_CREAT);
     if (shmid_b < 0) { /* shared memory error check */
         perror("shmget\n");
