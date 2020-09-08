@@ -121,7 +121,7 @@ void mm(matrix a, matrix b, matrix result)
     for (i = 0; i < size; i++)
         for (j = 0; j < size; j++)
             for (k = 0; k < size; k++)
-                result.element[i][j] += a.element[i][k] * b.element[k][j];//bTrans.element[j][k]
+                result.element[i][j] += a.element[i][k] * b.element[j][k];//bTrans.element[j][k]
 }
 
 void print_matrix(matrix m)
