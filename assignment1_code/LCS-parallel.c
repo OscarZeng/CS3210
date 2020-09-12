@@ -1,5 +1,4 @@
-#include <pthread.h>
-#include <queue>          
+#include <pthread.h>       
 #include <stdio.h>
 #include <stdlib.h>
 #define PRODUCERS 8
