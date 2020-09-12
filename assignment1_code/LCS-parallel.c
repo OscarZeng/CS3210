@@ -12,6 +12,7 @@ int M, N;
 void* work(void* threadid) // function to run in parallel
 {
     long tid;
+    tid = (long)threadid;
     int old = 0;
     int new = 1;
     for (int i = 1; i <= M; i++) {
