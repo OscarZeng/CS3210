@@ -17,7 +17,9 @@ void* work(void* threadid) // function to run in parallel
     int new = 1;
     for (int i = 1; i <= M; i++) {
         for (int j = 1; j <= N; j++) {
+            printf("step before assessing seq1 and seq2\n");
             if (seq1[i - 1] == seq2[j - 1]) {
+                printf("step before assessing mat\n");
                 mat[new][j] = mat[old][j - 1] + 1;
             } else {
                 int left = mat[new][j - 1];
