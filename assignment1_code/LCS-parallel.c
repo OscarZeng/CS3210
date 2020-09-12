@@ -6,7 +6,7 @@
 //For global varibles
 char *seq1;
 char *seq2;
-int *mat;
+int *mat[2];
 int M, N;
 
 void* work(void* threadid) // function to run in parallel
@@ -63,9 +63,9 @@ int main(int argc, char *argv[]) {
     fclose(file2);
     // Initialise two rows of the matrix with (M + 1) rows x (N + 1) columns
     
-    //mat[0] = calloc(N + 1, sizeof(int));
-    //mat[1] = malloc((N + 1) * sizeof(int));
-    mat[M][N] = {0};
+    mat[0] = calloc(N + 1, sizeof(int));
+    mat[1] = malloc((N + 1) * sizeof(int));
+    mat[1][0] = 0;
 
     pthread_t threads[NUM_THREADS];
     int rc;
@@ -90,5 +90,6 @@ int main(int argc, char *argv[]) {
     pthread_exit(NULL);
     free(seq1);
     free(seq2);
-    free(mat);
+    free(mat[0]);
+    free(mat[1]);
 };
