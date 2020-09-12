@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
     
 
 */
-    printf("%d", mat[old][N]);
+    printf("%d", mat[M][N]);
 
     pthread_exit(NULL);
     free(seq1);
