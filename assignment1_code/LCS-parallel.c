@@ -90,6 +90,5 @@ int main(int argc, char *argv[]) {
     pthread_exit(NULL);
     free(seq1);
     free(seq2);
-    free(mat[0]);
-    free(mat[1]);
+    free(mat);
 };
